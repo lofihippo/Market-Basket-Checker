@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="A dated, searchable record of Market Basket flyer offers, prices and seasonal grocery context.">
+  <title>Market Basket · The weekly basket</title>
+  <style>/* DASHBOARD_CSS */</style>
+</head>
+<body>
+<a class="skip-link" href="#offers">Skip to offers</a>
+<header class="masthead wrap">
+  <a class="brand" href="#top"><span class="brand-icon" aria-hidden="true">mb.</span><span>THE WEEKLY BASKET<small>An independent Market Basket flyer companion</small></span></a>
+  <nav aria-label="Main navigation"><a href="#offers">The offers</a><a href="#history">Price history</a><a href="#seasonal">In season</a></nav>
+</header>
+<main id="top" class="wrap">
+  <section class="hero" aria-labelledby="hero-title">
+    <div><p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> YOUR WEEKLY GROCERY FIELD NOTES</p><h1 id="hero-title">A better look at<br>your weekly basket.</h1><p class="intro">Explore the flyer, follow advertised prices, and find a little seasonal inspiration for your next shop.</p><div class="hero-foot"><a class="button" href="#offers">Browse this week <span aria-hidden="true">↗</span></a><span id="hero-date"></span></div></div>
+    <aside class="week-card"><p class="eyebrow">ON THE NOTICEBOARD</p><label for="week-select">Choose a flyer week</label><select id="week-select"></select><p id="week-message"></p><a id="flyer-link" class="text-link" target="_blank" rel="noopener noreferrer">Open original flyer <span aria-hidden="true">↗</span></a><div class="stamp" aria-hidden="true">GOOD FOOD<br><span>starts with a list.</span></div></aside>
+  </section>
+  <div class="stats" aria-label="This week at a glance">
+    <div><strong id="offer-count">—</strong><span>advertised offer groups</span></div><div><strong id="category-count">—</strong><span>grocery categories</span></div><div><strong id="week-count">—</strong><span>weeks in the archive</span></div><div><strong id="review-count">—</strong><span>offers flagged for review</span></div>
+  </div>
+  <p id="source-issues" class="source-warning" hidden></p>
+  <section class="category-section" aria-labelledby="category-title"><div class="section-intro"><p class="eyebrow">THE FLYER MIX</p><h2 id="category-title">What’s most on sale?</h2><p>The categories with the most advertised offers in this flyer. Counts describe flyer coverage, not discount size or the share of a store’s inventory on sale.</p><p class="small">Categories are inferred from item names and flyer context; ambiguous items remain uncategorized.</p></div><div id="category-bars" class="category-bars"></div></section>
+  <section id="offers" class="offers-section" aria-labelledby="offers-title"><div class="section-heading"><div><p class="eyebrow">BUILD YOUR SHOPPING LIST</p><h2 id="offers-title">The week’s offers</h2></div><p class="small">Flyer prices · Always confirm details in the original</p></div>
+    <div class="filters"><div class="search-field"><label for="search">Find an item</label><input id="search" type="search" placeholder="Try apples, coffee, chicken…" autocomplete="off"></div><div><label for="category-filter">Category</label><select id="category-filter"><option value="">All categories</option></select></div><div><label for="review-filter">Review status</label><select id="review-filter"><option value="all">All offers</option><option value="review">Needs review</option><option value="clear">No extraction flags</option></select></div><button id="reset-filters" class="quiet-button" type="button">Reset</button></div>
+    <div class="results-line"><p id="result-count" aria-live="polite"></p><span>PRICE / OFFER</span></div><div id="offer-list" class="offer-list"></div><div class="pagination"><button id="previous-page" class="quiet-button" type="button">← Previous</button><span id="pagination-label"></span><button id="next-page" class="quiet-button" type="button">Next →</button></div>
+  </section>
+  <section id="history" class="history-section" aria-labelledby="history-title"><div class="section-heading"><div><p class="eyebrow">A BASKET, OVER TIME</p><h2 id="history-title">Follow the prices.</h2></div><span class="tag">Your growing archive</span></div><p class="section-description">Only captured flyer observations appear here. Comparable names, pack sizes and price terms stay together; a missing week does not mean an item was unavailable or full price.</p>
+    <div class="history-grid"><div class="history-chart-card"><label for="product-select">Compare an advertised product</label><select id="product-select"></select><div class="history-head"><div><h3 id="history-product"></h3><p id="history-package" class="small"></p></div><div><strong id="history-price"></strong><span class="small">latest captured price per advertised unit</span></div></div><div id="price-chart"></div><p id="history-note" class="small"></p><details class="history-table-details"><summary>View recorded observations</summary><div class="table-scroll"><table><caption class="sr-only">Dated advertised price observations</caption><thead><tr><th scope="col">Week of</th><th scope="col">Advertised offer</th><th scope="col">Per unit</th><th scope="col">Source</th></tr></thead><tbody id="history-table"></tbody></table></div></details></div>
+    <aside class="coverage-card"><p class="eyebrow">THE LONG VIEW</p><h3>History starts here.</h3><p id="coverage-note"></p><div id="month-coverage" class="month-coverage" aria-label="Archive month coverage"></div><label for="trend-category">Monthly flyer mix</label><select id="trend-category"></select><div id="category-trend"></div><p class="small">Monthly values are observed offer counts per captured week. Blank months have no data. An annual pattern needs observations across the year.</p></aside></div>
+  </section>
+  <section id="seasonal" class="season-section" aria-labelledby="season-title"><div class="section-heading"><div><p class="eyebrow">LET THE SEASONS HELP</p><h2 id="season-title">A year of good things.</h2></div><div class="season-switch"><label for="season-region">Seasonal context</label><select id="season-region"><option value="us">U.S. overview</option><option value="new_england">New England harvest notes</option></select></div></div><p id="season-note" class="section-description"></p><div class="season-legend"><span><i class="season-dot"></i> Typical seasonal window</span><span><i class="current-dot"></i> Selected flyer month</span></div><div class="table-scroll seasonal-scroll"><table class="season-table"><caption id="season-caption" class="sr-only">Typical seasonal availability, not observed deal predictions</caption><thead id="season-head"></thead><tbody id="season-body"></tbody></table></div><p id="regional-note" class="small"></p><details class="sources"><summary>Seasonal sources &amp; how to read this guide</summary><p id="source-note"></p><ul id="season-sources"></ul></details></section>
+  <details class="sources methodology"><summary>About the archive &amp; reporting method</summary><ul id="report-notes"></ul></details>
+  <footer><span class="footer-wordmark">The weekly basket.</span><p>Independent reporting from Market Basket weekly flyers. No affiliation with Market Basket.<br><span id="generated-at"></span></p><a href="#top">Back to top ↑</a></footer>
+</main>
+<dialog id="offer-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><p class="eyebrow">FROM THE FLYER</p><button id="close-dialog" class="quiet-button" aria-label="Close offer details" type="button">Close ×</button></div><h2 id="dialog-title"></h2><div id="dialog-content"></div></dialog>
+<noscript><p class="noscript">Enable JavaScript to search this offline report. The source data is embedded in this file.</p></noscript>
+<script id="dashboard-data" type="application/json">DASHBOARD_DATA</script>
+<script>/* DASHBOARD_JS */</script>
+</body>
+</html>

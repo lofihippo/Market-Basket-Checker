@@ -1,0 +1,16 @@
+{
+  "_comment": "Override tunables for the Market Basket flyer extractor. Lists are APPENDED to defaults; scalars replace them. Reproduce with: python extract_deals.py <pdf> --config config.example.json",
+  "non_products": [
+    "new section header that appears this week",
+    "another page title"
+  ],
+  "store_towns": [
+    "Some New Town"
+  ],
+  "store_streets": [
+    "Main Street"
+  ],
+  "taglines": [
+    "New Promotional Tagline"
+  ]
+}

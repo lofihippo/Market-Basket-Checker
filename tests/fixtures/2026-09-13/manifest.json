@@ -1,0 +1,8 @@
+{
+  "pdf": "flyer.pdf",
+  "sha256": "5c8c326720daad1b58516ca4aa8f9aac351ef5a6baae6ae394ded3d83f126293",
+  "sale_start": "2026-09-13",
+  "sale_end": "2026-09-19",
+  "source_url": "https://www.shopmarketbasket.com/weekly-flyer/",
+  "reference_notes": "Regression fixture for the second weekly layout: purple-blue produce titles, one-span price/savings, beer prices beside titles, and seafood flavor ownership. Selected native-text offers visually checked September 14, 2026. Not a complete annotated flyer. The Organic Wellness Shots banner on page 2 is image-only and is not currently extracted."
+}

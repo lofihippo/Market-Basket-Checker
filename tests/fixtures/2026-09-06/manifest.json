@@ -1,0 +1,10 @@
+{
+  "pdf": "flyer.pdf",
+  "sha256": "1bf4fefb9e233a43025a315a6b1fa9cd28543959e0255d8a37ceaee0f78c480f",
+  "reference": "page1.json",
+  "page": 0,
+  "sale_start": "2026-09-06",
+  "sale_end": "2026-09-12",
+  "source_url": "https://www.shopmarketbasket.com/weekly-flyer/",
+  "reference_notes": "25 cover-page offer groups. Based on the previous human-reviewed reference and visually checked September 13, 2026. Added Gold’s sauce; made 99-cent prices explicit; corrected salami savings basis and unsupported details. Package variants share a row where separately priced variants are not yet modeled. This is not a full-flyer accuracy fixture."
+}

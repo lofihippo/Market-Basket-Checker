@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Downloaded flyer PDF (large, changes weekly — re-download, don't commit)
+*.pdf
+!tests/fixtures/2026-09-06/flyer.pdf
+!tests/fixtures/2026-09-13/flyer.pdf
+
+# Generated output
+output/
+*.json.tmp
+/tmp/
+
+# Handoff docs (session context, not part of the repo)
+HANDOFF.md
+*.handoff.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
