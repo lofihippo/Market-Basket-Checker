@@ -1,4 +1,5 @@
 """Build the offline weekly-deals report from captured, dated observations."""
+import base64
 import json
 import os
 from pathlib import Path
@@ -21,9 +22,11 @@ def render_dashboard(data, output_path):
         "/* DASHBOARD_CSS */": (assets / "dashboard.css").read_text(encoding="utf-8"),
         "/* DASHBOARD_JS */": (assets / "dashboard.js").read_text(encoding="utf-8"),
         "DASHBOARD_DATA": payload,
+        "DASHBOARD_LOGO": 'data:image/png;base64,' + base64.b64encode(
+            (assets / 'assets/market-basket-icon.png').read_bytes()).decode('ascii'),
     }
     import re
-    html = re.sub(r"/\* DASHBOARD_CSS \*/|/\* DASHBOARD_JS \*/|DASHBOARD_DATA",
+    html = re.sub(r"/\* DASHBOARD_CSS \*/|/\* DASHBOARD_JS \*/|DASHBOARD_DATA|DASHBOARD_LOGO",
                   lambda match: replacements[match.group()], html)
     destination = Path(output_path)
     destination.parent.mkdir(parents=True, exist_ok=True)

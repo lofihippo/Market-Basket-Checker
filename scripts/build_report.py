@@ -23,7 +23,7 @@ def main(argv=None):
         protected = [args.history_db.resolve(), *(p.resolve() for p in args.exports)]
         if args.html_out.resolve() in protected or args.history_db.resolve() in [p.resolve() for p in args.exports]:
             raise ValueError('Report, history database, and source exports must have distinct paths')
-        # Validate and enrich every requested input before recording any week.
+        # Parse and enrich inputs first; record_week validates each transaction.
         payloads = [enriched_export(json.loads(path.read_text(encoding='utf-8'))) for path in args.exports]
         for payload in payloads:
             record_week(args.history_db, payload)

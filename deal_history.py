@@ -219,6 +219,9 @@ def build_history(db_path):
                 "product_key": key, "item": offer["item"],
                 "package_label": offer["package_label"], "unit": offer.get("unit"),
                 "quantity": offer["quantity"], "observations": []})
+            # Browse by the latest eligible observation's department. Category
+            # corrections must not split the same product's price history.
+            item["category"] = offer.get("category") or "Uncategorized"
             item["observations"].append({
                 "week_id": week_id, "start_date": start, "price": offer["price"],
                 "amount": offer["amount"], "unit_price": offer["unit_price"],

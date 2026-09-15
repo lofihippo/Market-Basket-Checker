@@ -1,12 +1,18 @@
-# Market Basket Weekly Checker
+# Market Basket Weekly Specials
 
 Extract the weekly deals from the Market Basket grocery flyer PDF into
-structured, machine-readable data.
+searchable offers, a dated price archive, and a local HTML report.
 
 The flyer is published weekly at `https://www.shopmarketbasket.com/weekly-flyer/`
 (the "view classic flyer" link downloads a PDF). This project parses that PDF
 and outputs one JSON record per deal, with the item name, details (size/flavor),
 price, savings, and a numeric price value.
+
+For the Sunday 5 PM Eastern GitHub Actions schedule, Pages setup, and local
+self-hosting, see [GitHub Pages and weekly updates](docs/GITHUB_PAGES.md).
+The browser UI is a report viewer; Python runs the downloads and extraction
+locally or on the scheduled GitHub runner. See also
+[running options](docs/RUNNING_OPTIONS.md).
 
 ## Layout families handled
 
@@ -45,11 +51,22 @@ Discover, archive, and extract the current weekly flyer:
 python scripts/check_weekly.py
 ```
 
-This writes `output/weekly-deals.json`, containing `pages`, source dates and
+Open `output/report.html` in a browser after the command finishes. It includes
+a colorful overview of nine broad shopping categories, with offer counts,
+shares of the flyer, illustrations, and representative prices. Select a category
+to see all its offers as cards, without pagination, or search across the flyer.
+Original departments, review flags, and PDF page links remain in offer details.
+Separate Price history and In season views contain comparable observations,
+monthly category counts, and the seasonal produce calendar. The report has responsive layouts and works offline without external
+fonts, scripts, or a web server. Original PDF links require the archive files
+to remain in their relative locations.
+
+The command also writes `output/weekly-deals.json`, containing `pages`, source dates and
 hashes in `source`, and the extraction method/configuration in `extraction`.
 The PDF remains the source of the extracted offers. The official website's
-JSON products are archived for comparison; they are not substituted for PDF
-results or used as an accuracy denominator.
+JSON products supply departments for matching item names; they are not
+substituted for PDF results or used as an accuracy denominator. Other category
+assignments are labeled estimates, and ambiguous names remain uncategorized.
 
 Download and verify the source without running extraction:
 
@@ -57,11 +74,17 @@ Download and verify the source without running extraction:
 python scripts/check_weekly.py --fetch-only
 ```
 
-Use `--source-dir DIR`, `--json-out FILE`, `--timeout SECONDS`, and
+Use `--source-dir DIR`, `--json-out FILE`, `--history-db FILE`,
+`--html-out FILE`, `--timeout SECONDS`, and
 `--config FILE` to override the archive, export, request timeout, or extractor
-settings. Defaults are `output/source`, `output/weekly-deals.json`, and a
-30-second socket timeout. A normal check runs extraction even when source
-bytes are unchanged, so extractor improvements are reflected in the export.
+settings. Defaults are `output/source`, `output/weekly-deals.json`,
+`output/history.sqlite3`, `output/report.html`, and a 30-second socket timeout.
+Use `--no-report` to export JSON without updating history or HTML.
+A normal check runs extraction even when source bytes are unchanged.
+`--skip-unchanged` instead verifies the current source, then reuses a successful
+build only when sale content, configuration, Python/PyMuPDF versions, code,
+report assets, and all output file hashes match its saved receipt. Missing or
+edited outputs trigger a rebuild. Failed checks never advance this receipt.
 
 Extract and print all deals:
 
@@ -135,12 +158,132 @@ The mutable root PDF and `tests/fixtures/2026-09-06/` are never overwritten by
 acquisition. The public endpoint is an undocumented website dependency. If it
 changes or is unavailable, the existing local-PDF commands remain available.
 
-Live verification on September 13, 2026 successfully acquired the September
-13–19 eight-page flyer and matched its printed effective dates. Extraction of
-that new flyer exposed a coverage gap: page 2 contains produce specials but
-currently yields no offers. The weekly command therefore exits with a review
-error and preserves the previous deal export. `--fetch-only` succeeds; support
-for the new page layout needs correction before relying on a complete report.
+The September 13–19 eight-page fixture now yields 353 advertised offer groups,
+including 23 on its previously unsupported produce page. Its image-only Organic
+Wellness Shots banner on page 2 remains omitted; this known coverage warning is
+tied to the PDF hash and retained in subsequent reports. The September 6–12
+fixture yields 362 offer groups. Counts are regression checks, not proof of
+complete extraction. The two actual flyer weeks seed the local history; no
+historical prices are fabricated.
+
+## Deal history and seasonal reporting
+
+`deal_history.py` uses SQLite with immutable extraction revisions and one active
+revision per flyer date range. Repeating the same content does not add a week;
+an extraction correction preserves the previous revision and updates the active
+view. Each revision retains its source metadata and full extracted offer fields.
+Invalid dates, missing PDF hashes, and non-finite JSON numbers are rejected
+before committing a revision. When source page counts are supplied, partial
+page sets are rejected as well.
+
+Price comparisons require the same normalized printed name, details, package,
+sale unit, and multibuy quantity. Flagged offers, ambiguous variants, duplicate
+identities within a week, and unclear package or price terms remain browsable
+but are excluded from comparable series. This conservative matching is not a
+UPC catalog: wording changes can split a product's history. Charts plot actual
+observations and never fill missing weeks. Two captured September weeks do not
+establish annual price patterns.
+
+Category charts measure extracted offer groups and their share of a flyer,
+not the largest percentage discounts. Monthly values divide category counts by
+captured weeks; months without observations are missing data. Weeks belong to
+the month of their start date.
+
+The seasonal calendar uses the [USDA SNAP-Ed seasonal produce guide](https://snaped.fns.usda.gov/seasonal-produce-guide)
+for a U.S. overview, with selected New England harvest notes based on the
+[Massachusetts picking guide](https://www.mass.gov/guides/pick-your-own-farms).
+National seasons are displayed as three-month calendar blocks; local partial
+months are shown as whole months. Weather and location affect actual timing.
+An empty regional row means this guide supplies no local window.
+These are availability references, not mandatory grocery pricing standards or
+predictions of discounts. The report links the [USDA AMS advertised produce survey](https://mymarketnews.ams.usda.gov/viewReport/3324)
+as a future benchmark source; it does not import national prices or claim
+comparisons against a national average.
+
+Rebuild the report from stored history without downloading or extracting:
+
+```bash
+python scripts/build_report.py
+```
+
+Import existing dated exports with `source.start_date`, `source.end_date`, and
+`source.pdf.sha256` (plain local extractor output alone lacks this metadata):
+
+```bash
+python scripts/build_report.py output/history-imports/2026-09-06.json output/history-imports/2026-09-13.json
+```
+
+Each history update is transactional, and JSON and HTML files are replaced
+atomically individually. The complete command is not a transaction spanning
+all three outputs: if report rendering fails after extraction, JSON and history
+may already be updated while the previous HTML survives. Rebuild the report
+after fixing the error. Multi-file imports likewise commit one week at a time.
+
+Back up `output/history.sqlite3` while no checker is running, along with
+`output/source/` and any imported PDFs/JSON. The generated `output/` directory
+is ignored by Git. Keep the dated test fixtures with the project for the seeded
+older week's source link.
+
+## Scheduled checks on macOS
+
+The local schedule runs the Python checker directly, without AI calls or AI
+usage credits. It checks **Sunday and Monday at 9 a.m. in the Mac's local time
+zone**, plus at login. Monday provides a second chance if Sunday's source is
+late or unavailable. Flyer effective dates are always validated in New York
+time, even if the Mac's scheduling time zone changes.
+
+Prepare and inspect the job without enabling it:
+
+```bash
+python scripts/manage_schedule.py prepare
+```
+
+Install it for the current macOS user (also starts an immediate check):
+
+```bash
+python scripts/manage_schedule.py install
+```
+
+The installed LaunchAgent is
+`~/Library/LaunchAgents/org.reasonix.market-basket-weekly-checker.plist`.
+It points at this checkout and its `.venv/bin/python`; Codex does not need to
+be open. Keep the checkout and virtual environment in place. To change the time,
+rerun installation with `--hour 10 --minute 30`; the previous configuration is
+backed up. Reinstalling also re-enables a disabled schedule.
+
+Inspect the schedule, check now, or read the last check result:
+
+```bash
+python scripts/manage_schedule.py status
+python scripts/run_scheduled_check.py
+python scripts/run_scheduled_check.py --status
+```
+
+The runner sets its working directory automatically, prevents overlapping
+scheduled runs with a process lock, and limits each check to five minutes.
+It saves `output/automation/status.json` with start/end times, `updated`,
+`unchanged`, or `failed`, the exit code, and the last successful check time.
+`output/automation/check.log` rotates at 1 MB with three backups. Separate
+`launchd.stdout.log` and `launchd.stderr.log` capture startup output/errors.
+Failures remain visible in status and logs; there are no email or push alerts.
+Avoid running manual extraction or history imports concurrently with a check.
+
+The successful-build receipt is `output/automation/success.json`. An unchanged
+check refreshes source verification and run status while preserving JSON,
+history, and HTML bytes. The report's generation date therefore means the last
+build, not the last source check. An expired or inaccessible source still fails;
+an old report is never treated as evidence that this week's source is valid.
+
+Disable future runs while retaining all data:
+
+```bash
+python scripts/manage_schedule.py disable
+```
+
+This is a user LaunchAgent and requires the user to be logged in. macOS runs a
+missed calendar check after waking from sleep; a powered-off Mac cannot run it.
+The extra login check helps after restarting. See [Apple's scheduling guide](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/ScheduledJobs.html).
+This setup does not run a hosted service or wake the Mac on a timer.
 
 Override heuristics for a new flyer (e.g. a new section header) without editing
 code:
@@ -175,6 +318,7 @@ Each deal is a JSON object:
 | `confidence` | `high` / `medium` / `low` — heuristic review signal |
 | `_issues`  | Reasons an offer needs review |
 | `_source_text`, `_bbox` | Assigned PDF text and page coordinates for inspection |
+| `category`, `category_source` | Reporting category and its official match or estimate basis |
 
 Each `prices` entry retains `label`, `price`, `price_n`, `unit`, `_bbox`, and
 the same `quantity`/`amount`/`unit_price` terms. For `2 for $5`, those terms
@@ -187,6 +331,17 @@ does not mean the offer has no prices: inspect `prices` for explicit variants.
 - `extract_deals.py` — the extractor (entry point).
 - `flyer_source.py` — official-source discovery, validation, and hashed archives.
 - `scripts/check_weekly.py` — acquire the current PDF and export its offers.
+- `deal_history.py` — immutable weekly revisions and conservative product observations.
+- `deal_categories.py` — department matches and labeled category estimates.
+- `seasonality.py` — cited U.S. seasonal context and New England harvest notes.
+- `reporting.py` — connect dated exports, archived category data, history, and report.
+- `dashboard.py`, `web/dashboard.*` — atomic, self-contained HTML report and responsive UI.
+- `scripts/build_report.py` — import dated exports or rebuild the report offline.
+- `portable_site.py`, `scripts/publish_site.py` — verified portable history and static website export.
+- `.github/workflows/weekly-specials.yml` — personal public repository schedule and Pages publication.
+- `check_state.py` — successful-build receipts and unchanged-output verification.
+- `scripts/run_scheduled_check.py` — bounded scheduled run, overlap lock, logs and status.
+- `scripts/manage_schedule.py` — prepare, install, inspect or disable the macOS LaunchAgent.
 - `extractor_config.py` — centralized tunable heuristics.
 - `layout.py` — vector column boundaries and row separation.
 - `name_styles.py` — product-title color/font selection.
@@ -198,6 +353,7 @@ does not mean the offer has no prices: inspect `prices` for explicit variants.
 - `data/page1_deals.py` — compatibility import for the dated page 1 reference.
 - `validation.py` — strict offer and field comparisons.
 - `tests/fixtures/2026-09-06/` — archived PDF, checksum, and page 1 annotations.
+- `tests/fixtures/2026-09-13/` — second-week PDF and targeted layout regressions.
 - `scripts/report_quality.py` — full-PDF quality report + consolidated JSON.
 - `scripts/run_all.py` — run the extractor across all pages.
 - `scripts/validate_page1.py` — validate page 1 against the reference.

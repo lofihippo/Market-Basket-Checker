@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 import extract_deals as ed
+from check_state import build_key, reusable, save_success
 from extractor_config import DEFAULT_CONFIG, load_config
 from flyer_source import SourceError, fetch_current
 from json_output import write_json
@@ -46,18 +47,23 @@ def main(argv=None):
     parser.add_argument('--html-out', type=Path, default=Path('output/report.html'))
     parser.add_argument('--no-report', action='store_true',
                         help='Export JSON only, without updating history or HTML')
+    parser.add_argument('--skip-unchanged', action='store_true',
+                        help='Reuse a successful build when source, code and outputs match')
+    parser.add_argument('--cache-file', type=Path, default=Path('output/automation/success.json'),
+                        help='Successful-build receipt used by --skip-unchanged')
     args = parser.parse_args(argv)
     previous_config = ed.CONFIG
     try:
         if not math.isfinite(args.timeout) or args.timeout <= 0:
             raise ValueError("Timeout must be a finite positive number")
         # A deal export must never replace its own source history.
-        destinations = [args.json_out] + ([] if args.no_report else [args.history_db, args.html_out])
+        outputs = [args.json_out] + ([] if args.no_report else [args.history_db, args.html_out])
+        destinations = outputs + ([args.cache_file] if args.skip_unchanged else [])
         if not args.fetch_only:
             if any(path.resolve().is_relative_to(args.source_dir.resolve()) for path in destinations):
                 raise ValueError("Outputs must be outside the source archive directory")
             if len({path.resolve() for path in destinations}) != len(destinations):
-                raise ValueError('JSON, history database, and HTML output paths must be distinct')
+                raise ValueError('JSON, history database, HTML and cache output paths must be distinct')
         ed.CONFIG = _validated_config(args.config)
         manifest = fetch_current(args.source_dir, timeout=args.timeout)
         pdf_path = args.source_dir / manifest["pdf"]["path"]
@@ -70,6 +76,10 @@ def main(argv=None):
         if manifest["pdf"]["text_page_count"] != manifest["pdf"]["page_count"]:
             raise SourceError("PDF contains pages without selectable text; "
                               "OCR or visual extraction is required before exporting offers")
+        key = build_key(ROOT, manifest, ed.CONFIG) if args.skip_unchanged else None
+        if key and reusable(args.cache_file, key, outputs):
+            print('Unchanged: verified source and previous successful outputs; extraction skipped.')
+            return 0
         result = ed.extract_document(pdf_path)
         count = sum(len(page["deals"]) for page in result["pages"])
         if count == 0:
@@ -86,6 +96,8 @@ def main(argv=None):
         if not args.no_report:
             report = record_and_render(result, args.history_db, args.html_out)
             print(f"History: {report['week_count']} weeks. Report: {args.html_out.resolve()}")
+        if key:
+            save_success(args.cache_file, key, outputs)
         print(f"Wrote {count} offers across {len(result['pages'])} pages to {args.json_out}.")
         return 0
     except (SourceError, OSError, ValueError, RuntimeError, sqlite3.Error) as error:

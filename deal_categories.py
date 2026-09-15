@@ -19,7 +19,7 @@ _DEPARTMENTS = {
 }
 # Estimates are deliberately labeled. They are not retailer inventory counts.
 _RULES = [
-    ('Household & Pet', r'\b(detergent|dish\s*(soap|liquid)|paper towels?|bath tissue|toilet|bleach|trash|garbage|cleaner|disinfect|dog food|cat food|cat litter|kibbles|purina|friskies|fancy feast|dixie|bounty|charmin|puffs tissues|reynolds|hefty|ziploc|glad bags|shampoo|toothpaste|deodorant|soap|vitamins?)\b'),
+    ('Household & Pet', r'\b(detergent|dish\s*(soap|liquid)|paper towels?|bath tissue|toilet|bleach|trash|garbage|cleaner|disinfect|dog food|cat food|cat litter|kibbles|purina|friskies|fancy feast|dixie|bounty|charmin|puffs tissues|reynolds|hefty|ziploc|glad bags|shampoo|toothpaste|deodorant|soap|vitamins?(?!\s+water\b))\b'),
     ('Floral', r'\b(roses|bouquet|potted|mums|bromeliad|heather|sunflower bunch|orchid|chrysanthemum)\b'),
     ('Beer & Wine', r'\b(wines?|cabernet|chardonnay|merlot|pinot|sauvignon|beer|budweiser|bud light|coors|miller lite|michelob|cavit|coppola|wente|casillero|high noon|nutrl|sun cruiser|truly hard|samuel adams|heineken|corona extra)\b'),
     ('Sushi', r'\b(sushi|nigiri|tempura.*roll|teriyaki chicken roll|rainbow roll)\b'),

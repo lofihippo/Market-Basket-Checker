@@ -24,6 +24,10 @@ class ReportContextTests(unittest.TestCase):
         self.assertEqual(classify_offer({'item': 'Dixie Plates'})[0], 'Household & Pet')
         self.assertEqual(classify_offer({'item': 'Polar Seltzer'})[0], 'Grocery')
 
+    def test_vitamin_water_is_a_drink_not_a_household_supplement(self):
+        self.assertEqual(classify_offer({'item': 'Vitamin Water 6 Pack'})[0], 'Grocery')
+        self.assertEqual(classify_offer({'item': 'Daily Vitamins'})[0], 'Household & Pet')
+
     def test_seasonal_context_distinguishes_national_and_local_availability(self):
         result = seasonal_context()
         items = {i['name']: i for i in result['items']}

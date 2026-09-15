@@ -10,6 +10,13 @@ from deal_categories import categorize_payload
 from deal_history import build_history, record_week
 from seasonality import seasonal_context
 
+# Visually confirmed omissions, tied to exact PDF bytes rather than a date or
+# mutable URL. See the corresponding dated fixture manifest for evidence.
+_KNOWN_PDF_COVERAGE_ISSUES = {
+    '5c8c326720daad1b58516ca4aa8f9aac351ef5a6baae6ae394ded3d83f126293':
+        'Organic Wellness Shots image-only banner on page 2 is not extracted.',
+}
+
 
 def read_catalog(payload):
     """Use only the exact archived API response belonging to this export."""
@@ -31,7 +38,14 @@ def read_catalog(payload):
 
 
 def enriched_export(payload):
-    return categorize_payload(payload, read_catalog(payload))
+    result = categorize_payload(payload, read_catalog(payload))
+    source = result.get('source', {})
+    note = _KNOWN_PDF_COVERAGE_ISSUES.get(source.get('pdf', {}).get('sha256'))
+    if note:
+        issues = source.setdefault('issues', [])
+        if note not in issues:
+            issues.append(note)
+    return result
 
 
 def dashboard_data(history_db, html_path):

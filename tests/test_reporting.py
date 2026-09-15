@@ -56,6 +56,20 @@ class ReportingTests(unittest.TestCase):
         data = dashboard_data(self.db, self.root / 'report.html')
         self.assertIsNone(data['weeks'][0]['source']['pdf_href'])
 
+    def test_known_coverage_warning_survives_refresh_without_duplication(self):
+        self.payload['source']['pdf']['sha256'] = '5c8c326720daad1b58516ca4aa8f9aac351ef5a6baae6ae394ded3d83f126293'
+        refreshed = enriched_export(self.payload)
+        self.assertEqual(len(refreshed['source']['issues']), 1)
+        self.assertIn('Organic Wellness Shots', refreshed['source']['issues'][0])
+        self.assertEqual(enriched_export(refreshed), refreshed)
+        self.assertNotIn('issues', self.payload['source'])
+        record_week(self.db, refreshed)
+        self.assertEqual(dashboard_data(self.db, self.root / 'report.html')['weeks'][0]['source']['issues'],
+                         refreshed['source']['issues'])
+
+    def test_different_pdf_does_not_inherit_a_known_coverage_warning(self):
+        self.assertNotIn('issues', enriched_export(self.payload)['source'])
+
 
 if __name__ == '__main__':
     unittest.main()

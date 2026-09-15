@@ -134,6 +134,27 @@ class DealHistoryTests(unittest.TestCase):
         self.assertEqual(len(history["series"]), 6)
         self.assertEqual(len({row["product_key"] for row in history["series"]}), 6)
 
+    def test_series_category_uses_latest_eligible_week_without_splitting_history(self):
+        # Import out of order; a later flagged observation cannot recategorize it.
+        record_week(self.path, payload("2026-09-13", "2026-09-19", category="Grocery"))
+        record_week(self.path, payload(category="Uncategorized"))
+        record_week(self.path, payload("2026-09-20", "2026-09-26", category="Produce",
+                                       _issues=["overprinted_price_text"]))
+        history = build_history(self.path)
+        self.assertEqual(len(history["series"]), 1)
+        series = history["series"][0]
+        self.assertEqual(series["category"], "Grocery")
+        self.assertEqual(len(series["observations"]), 2)
+        self.assertEqual(history["weeks"][0]["offers"][0]["category"], "Uncategorized")
+
+    def test_series_missing_category_stays_discoverable_as_uncategorized(self):
+        record_week(self.path, payload(category="Grocery"))
+        record_week(self.path, payload("2026-09-13", "2026-09-19", category=None))
+        series = build_history(self.path)["series"]
+        self.assertEqual(len(series), 1)
+        self.assertEqual(series[0]["category"], "Uncategorized")
+        self.assertEqual(len(series[0]["observations"]), 2)
+
     def test_typographic_case_and_whitespace_normalization_is_conservative(self):
         record_week(self.path, payload(item="Pete’s Yogurt", details="6 oz.  Assorted flavors"))
         record_week(self.path, payload("2026-09-13", "2026-09-19", item=" PETE'S YOGURT ", details="6 oz. Assorted flavors"))

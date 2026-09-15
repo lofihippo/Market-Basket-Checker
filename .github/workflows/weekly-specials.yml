@@ -1,0 +1,133 @@
+name: Update weekly specials
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 17 * * 0'
+      timezone: America/New_York
+    # Follow up if Sunday's flyer was delayed or the first check failed.
+    - cron: '15 9 * * 1'
+      timezone: America/New_York
+
+permissions: {}
+
+concurrency:
+  group: weekly-specials-publication
+  cancel-in-progress: false
+
+jobs:
+  build:
+    # Explicit personal repository only. No private or organization runners.
+    if: github.repository == 'lofihippo/Market-Basket-Checker' && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pages: read
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact_id }}
+    steps:
+      - name: Check out the collector
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.14'
+      - name: Install dependencies without a persistent cache
+        run: python -m pip install --no-cache-dir -r requirements.txt
+      - name: Run the regression suite
+        run: python -m unittest discover -s tests
+      - name: Restore durable history
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p output
+          if git ls-remote --exit-code --heads origin weekly-history > output/history-ref; then
+            git fetch --depth=1 origin weekly-history
+            git worktree add --detach output/history-store FETCH_HEAD
+            python scripts/publish_site.py restore --directory output/history-store/archive
+          else
+            result=$?
+            if [ "$result" -ne 2 ]; then exit "$result"; fi
+            git worktree add --detach output/history-store HEAD
+            git -C output/history-store switch --orphan weekly-history
+            echo 'Starting a new weekly archive.'
+          fi
+      - name: Download and extract the official flyer
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if timeout 300 python scripts/check_weekly.py --timeout 30; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then sleep 20; fi
+          done
+          echo 'Flyer check failed; the last published site is retained.' >&2
+          exit 1
+      - name: Export the verified weekly archive
+        run: python scripts/publish_site.py archive --directory output/history-store/archive
+      - name: Build the portable website
+        env:
+          SOURCE_BASE_URL: https://raw.githubusercontent.com/${{ github.repository }}/weekly-history/archive/
+        run: python scripts/publish_site.py site --directory output/site --source-base-url "$SOURCE_BASE_URL"
+      - name: Save history before publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C output/history-store add -- archive
+          if ! git -C output/history-store diff --cached --quiet; then
+            git -C output/history-store -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Archive verified weekly flyer observations'
+            git push origin "$(git -C output/history-store rev-parse HEAD):refs/heads/weekly-history"
+          fi
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - name: Upload the website
+        id: upload
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: output/site
+          retention-days: 1
+
+  deploy:
+    if: github.repository == 'lofihippo/Market-Basket-Checker' && github.event.repository.private == false
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+      actions: write # Remove only this run's temporary deployment artifact.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+      - name: Remove this run's temporary artifact
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ needs.build.outputs.artifact_id }}
+        shell: python
+        run: |
+          import json, os, urllib.error, urllib.request
+          repo = os.environ['GITHUB_REPOSITORY']
+          artifact = os.environ['ARTIFACT_ID']
+          if repo != 'lofihippo/Market-Basket-Checker' or not artifact.isdigit():
+              raise SystemExit('Unexpected repository or artifact ID')
+          url = f'https://api.github.com/repos/{repo}/actions/artifacts/{artifact}'
+          headers = {'Authorization': 'Bearer ' + os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'}
+          try:
+              with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as response:
+                  meta = json.load(response)
+              if meta['name'] != 'github-pages' or str(meta['workflow_run']['id']) != os.environ['GITHUB_RUN_ID']:
+                  raise SystemExit('Refusing to delete an artifact from another run')
+              with urllib.request.urlopen(urllib.request.Request(url, headers=headers, method='DELETE'), timeout=30):
+                  print('Temporary deployment artifact removed; the published site remains available.')
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
+                  raise

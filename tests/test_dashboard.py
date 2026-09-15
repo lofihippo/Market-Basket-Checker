@@ -1,5 +1,6 @@
 """Report publication and untrusted flyer text boundary checks."""
 from html.parser import HTMLParser
+import base64
 import json
 from pathlib import Path
 import tempfile
@@ -21,7 +22,8 @@ class ReportParser(HTMLParser):
         if tag == "script":
             self.active_script = {"attrs": attrs, "text": ""}
             self.scripts.append(self.active_script)
-        if tag in {"script", "img", "link"} and (attrs.get("src") or attrs.get("href")):
+        url = attrs.get('src') or attrs.get('href')
+        if tag in {"script", "img", "link"} and url and not url.startswith('data:'):
             self.external_assets.append(attrs)
 
     def handle_data(self, text):
@@ -50,7 +52,7 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(parser.external_assets, [])
 
     def test_flyer_text_cannot_escape_json_element_or_replace_asset_slots(self):
-        item = '</script><script>alert("flyer")</script><!-- & > \u2028 /* DASHBOARD_JS */ DASHBOARD_DATA'
+        item = '</script><script>alert("flyer")</script><!-- & > \u2028 /* DASHBOARD_JS */ DASHBOARD_DATA DASHBOARD_LOGO'
         data = {"weeks": [{"offers": [{"item": item}]}]}
         render_dashboard(data, self.path)
         parser = ReportParser()
@@ -58,6 +60,15 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(len(parser.scripts), 2)
         self.assertEqual(json.loads(parser.scripts[0]["text"]), data)
         self.assertNotIn('</script><script>alert("flyer")', self.path.read_text())
+
+    def test_official_logo_is_embedded_unchanged_for_offline_use(self):
+        render_dashboard({'weeks': []}, self.path)
+        logo = (Path(__file__).resolve().parents[1] / 'web/assets/market-basket-icon.png').read_bytes()
+        uri = 'data:image/png;base64,' + base64.b64encode(logo).decode('ascii')
+        html = self.path.read_text()
+        self.assertEqual(html.count(uri), 2)  # Header and browser favicon.
+        self.assertIn('alt="Market Basket"', html)
+        self.assertNotIn('DASHBOARD_LOGO', html)
 
     def test_invalid_payload_preserves_previous_report(self):
         render_dashboard({"weeks": []}, self.path)
