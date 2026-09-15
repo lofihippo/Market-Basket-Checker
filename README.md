@@ -1,6 +1,6 @@
 # Market Basket Weekly Specials
 
-[View weekly specials](https://lofihippo.github.io/Market-Basket-Checker/) ·
+[Open the live website](https://lofihippo.github.io/Market-Basket-Checker/) ·
 [Automatic update status](https://github.com/lofihippo/Market-Basket-Checker/actions/workflows/weekly-specials.yml)
 
 Market Basket discounts, updated every week. This tool downloads the official

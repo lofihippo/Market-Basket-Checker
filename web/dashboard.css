@@ -196,6 +196,7 @@ td,th {padding:13px 9px; border-bottom:1px solid var(--line); vertical-align:mid
 footer {display:flex; justify-content:space-between; align-items:center; gap:20px; border-top:1px solid var(--line); padding:24px 0 30px}
 footer p {font-size:11px; line-height:1.7; color:var(--muted)}
 footer a {font-size:10px}
+.footer-links {display:flex; flex-direction:column; align-items:flex-end; gap:10px; flex-shrink:0}
 .footer-wordmark {font:21px Georgia,serif; letter-spacing:-.5px}
 dialog {border:1px solid var(--line); background:var(--paper); color:var(--ink); border-radius:14px; max-width:620px; width:calc(100% - 32px); max-height:90vh; padding:28px; box-shadow:0 20px 100px #15281f38}
 dialog::backdrop {background:#12251db3}
@@ -300,7 +301,7 @@ dialog h2 {font-size:32px; margin-bottom:22px}
   .seasonal-scroll {margin-right:-18px; padding-right:18px}
   footer {flex-wrap:wrap; gap:17px}
   footer p {order:3; width:100%}
-  footer a {margin-left:auto}
+  .footer-links {margin-left:auto}
   dialog {padding:21px}
   .dialog-top .eyebrow {font-size:9px}
 }
