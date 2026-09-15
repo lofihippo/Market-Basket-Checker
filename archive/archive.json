@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "weeks": [
+    {
+      "path": "weeks/2026-09-06_2026-09-12.json",
+      "sha256": "2755a1bffd213f382ed3873655c07b710770edce8d29c5deb6e94d4baf7a3dc8"
+    },
+    {
+      "path": "weeks/2026-09-13_2026-09-19.json",
+      "sha256": "040e606ec68f277274511629859a2708dfd9fccb9192312a02d50960b2618659"
+    }
+  ]
+}
