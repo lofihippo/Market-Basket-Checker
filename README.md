@@ -1,5 +1,8 @@
 # Market Basket Weekly Specials
 
+[View weekly specials](https://lofihippo.github.io/Market-Basket-Checker/) ·
+[Automatic update status](https://github.com/lofihippo/Market-Basket-Checker/actions/workflows/weekly-specials.yml)
+
 Extract the weekly deals from the Market Basket grocery flyer PDF into
 searchable offers, a dated price archive, and a local HTML report.
 
