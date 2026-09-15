@@ -2,9 +2,8 @@
 
 This edition targets the personal repository
 [`lofihippo/Market-Basket-Checker`](https://github.com/lofihippo/Market-Basket-Checker).
-The intended website address is
-[`https://lofihippo.github.io/Market-Basket-Checker/`](https://lofihippo.github.io/Market-Basket-Checker/).
-It becomes available after Pages is enabled and the first deployment succeeds.
+The live site is [Market Basket Weekly Specials](https://lofihippo.github.io/Market-Basket-Checker/).
+For local installation, start with the [README](../README.md).
 
 ## One-time setup
 
@@ -82,7 +81,7 @@ Open `http://127.0.0.1:8766/`. This export includes the PDFs for offline use and
 can be copied as a folder to any static web server. Repeat the first two commands
 to update it, using a scheduler on that machine. `check_weekly.py` still generates
 the original `output/report.html` as well. An already-open browser tab needs a
-reload to display the rebuilt file. The local Mac schedule is configured
+reload to display the rebuilt file. The [local Mac schedule](REFERENCE.md#scheduled-checks-on-macos) is configured
 separately; enabling GitHub does not change it.
 
 To restore the hosted archive into a separate local database:
