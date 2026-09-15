@@ -1899,7 +1899,7 @@
           "_source_text": "•Thin Sliced Pepperoni\n$4.99\nSave $1.00\nlb.\nlb.",
           "amount": 4.99,
           "category": "Delicatessen",
-          "category_source": "Official department: exact name match",
+          "category_source": "Official department: name-based category match",
           "confidence": "high",
           "details": "",
           "item": "Thin Sliced Pepperoni",
@@ -15291,16 +15291,16 @@
     "end_date": "2026-09-19",
     "title": "Weekly Flyer Sep 13 - Sep 19",
     "source_page": "https://www.shopmarketbasket.com/weekly-flyer/",
-    "fetched_at": "2026-09-14T18:51:26.006982+00:00",
-    "checked_at": "2026-09-14T19:02:55.526073+00:00",
-    "content_id": "7d79e0a93ff427318f67418248096c327fb1b2e05a0d04d05d006f2ed473e2de",
+    "fetched_at": "2026-09-15T01:22:50.078024+00:00",
+    "checked_at": "2026-09-15T01:22:50.078024+00:00",
+    "content_id": "0af817279b60e52009f55e5388ecbcbad45ab989383ceefb8ea51bd78d6bdcbc",
     "issues": [
       "Organic Wellness Shots image-only banner on page 2 is not extracted."
     ],
     "pdf": {
       "sha256": "5c8c326720daad1b58516ca4aa8f9aac351ef5a6baae6ae394ded3d83f126293",
-      "url": "https://www.shopmarketbasket.com/download/52339/?tmstv=1789411145",
-      "download_url": "https://www.shopmarketbasket.com/download/52339/?tmstv=1789411145",
+      "url": "https://www.shopmarketbasket.com/download/52339/?tmstv=1789433577",
+      "download_url": "https://www.shopmarketbasket.com/download/52339/?tmstv=1789433577",
       "page_count": 8,
       "text_page_count": 8,
       "dates_verified": true,
@@ -15308,11 +15308,11 @@
       "path": "objects/5c8c326720daad1b58516ca4aa8f9aac351ef5a6baae6ae394ded3d83f126293.pdf"
     },
     "api": {
-      "sha256": "b62cbd4278487b6338f5ee03db66aae29361f7f84068888a45401d50a3962fb5",
+      "sha256": "3fb55ce132c8e19552b0056d4a4d04aa91702e987fe0e377a90eb4b7023e05cf",
       "url": "https://www.shopmarketbasket.com/wp-json/mb/v1/weekly-flyer",
       "product_count": 358,
-      "size_bytes": 192489,
-      "path": "objects/b62cbd4278487b6338f5ee03db66aae29361f7f84068888a45401d50a3962fb5.json"
+      "size_bytes": 192503,
+      "path": "objects/3fb55ce132c8e19552b0056d4a4d04aa91702e987fe0e377a90eb4b7023e05cf.json"
     }
   },
   "extraction": {
