@@ -49,6 +49,23 @@ class ReportingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'checksum'):
             read_catalog(self.payload)
 
+    def test_extraction_summary_follows_each_archived_week(self):
+        record_week(self.db, self.payload)  # Older imports can lack method metadata.
+        next_week = copy.deepcopy(self.payload)
+        next_week['source'].update(start_date='2026-09-13', end_date='2026-09-19')
+        next_week['source']['pdf']['page_count'] = 2
+        next_week['extraction'] = {'method': 'pdf', 'config': {'internal': 'not needed in the UI'}}
+        next_week['pages'].append({'page': 1, 'deals': [
+            {'item': 'Test Pears', 'price': '1.99', 'unit': 'lb',
+             'confidence': 'medium', '_issues': ['review_price']}]})
+        record_week(self.db, next_week)
+        data = dashboard_data(self.db, self.root / 'report.html')
+        first, second = data['weeks']
+        self.assertEqual(first['extraction'], {'method': None, 'page_count': 1})
+        self.assertEqual(second['extraction'], {'method': 'pdf', 'page_count': 2})
+        self.assertEqual([len(week['offers']) for week in data['weeks']], [1, 2])
+        self.assertEqual(second['offers'][1]['_issues'], ['review_price'])
+
     def test_missing_source_files_do_not_create_unsafe_links(self):
         self.pdf.unlink()
         self.payload['source']['pdf']['url'] = 'javascript:alert(1)'

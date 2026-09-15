@@ -226,8 +226,11 @@ def build_history(db_path):
                 "week_id": week_id, "start_date": start, "price": offer["price"],
                 "amount": offer["amount"], "unit_price": offer["unit_price"],
                 "page": offer["page"], "offer_id": offer["id"]})
+        extraction = payload.get("extraction") or {}
         weeks.append({"id": week_id, "run_id": run_id, "start_date": start,
-                      "end_date": end, "source": payload["source"], "offers": offers})
+                      "end_date": end, "source": payload["source"], "offers": offers,
+                      "extraction": {"method": extraction.get("method"),
+                                     "page_count": len(payload["pages"])}})
     return {"weeks": weeks,
             "series": sorted(series.values(), key=lambda value: (_normalize(value["item"]), value["product_key"])),
             "week_count": len(weeks)}

@@ -23,6 +23,7 @@ class PortableSiteTests(unittest.TestCase):
         pdf = b'Archived PDF test bytes'
         (self.root / 'flyer.pdf').write_bytes(pdf)
         self.payload = {
+            'extraction': {'method': 'pdf'},
             'source': {'start_date': '2026-09-06', 'end_date': '2026-09-12',
                        'archive_root': str(self.root), 'snapshot_path': '/private/machine/snapshot.json',
                        'pdf': {'path': 'flyer.pdf', 'sha256': hashlib.sha256(pdf).hexdigest(), 'page_count': 1}},
@@ -42,6 +43,8 @@ class PortableSiteTests(unittest.TestCase):
         restored = self.root / 'fresh-runner' / 'history.sqlite3'
         self.assertEqual(restore_archive(moved, restored), 2)
         history = build_history(restored)
+        self.assertEqual([week['extraction'] for week in history['weeks']],
+                         [{'method': 'pdf', 'page_count': 1}] * 2)
         self.assertEqual([o['unit_price'] for o in history['series'][0]['observations']], [2.99, 2.49])
         self.assertEqual(history['series'][0]['category'], 'Produce')
         for p in moved.rglob('*.json'):

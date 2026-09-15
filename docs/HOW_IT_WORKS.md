@@ -33,6 +33,13 @@ monthly category counts, and the seasonal produce calendar. The report has respo
 fonts, scripts, or a web server. Original PDF links require the archive files
 to remain in their relative locations.
 
+The footer shows the report build time in Eastern time and the selected week's
+extracted offer count, page coverage, and review count. These values update from
+the archive on each build and when a reader changes flyer weeks. Rebuilding a
+report from stored history updates its build time without claiming a new source
+check. The current/past status follows sale dates in New York time; an expired
+latest flyer displays a notice even if the page stays open overnight.
+
 The command also writes `output/weekly-deals.json`, containing `pages`, source dates and
 hashes in `source`, and the extraction method/configuration in `extraction`.
 The PDF remains the source of the extracted offers. The official website's

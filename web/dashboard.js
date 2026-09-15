@@ -13,6 +13,13 @@
     return Number.isNaN(parsed.getTime()) ? String(value) : parsed.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
   };
   const weekLabel = week => `${date(week.start_date)} – ${date(week.end_date)}`;
+  const timestamp = value => {
+    const parsed = new Date(value);
+    return !value || Number.isNaN(parsed.getTime()) ? null : parsed.toLocaleString('en-US', {
+      timeZone: 'America/New_York', month: 'short', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+    });
+  };
   const element = (tag, text, className) => {
     const node = document.createElement(tag);
     if (text !== undefined && text !== null) node.textContent = String(text);
@@ -119,9 +126,22 @@
     const part = type => parts.find(p => p.type === type)?.value;
     const today = `${part('year')}-${part('month')}-${part('day')}`;
     const kind = !week ? 'empty' : week.end_date < today ? 'past' : week.start_date > today ? 'future' : 'current';
-    setText('week-status', {empty: 'No flyer yet', past: 'Past flyer', future: 'Upcoming flyer', current: 'Current week'}[kind]);
-    $('week-status').className = 'week-status ' + kind;
+    const stale = weeks.length > 0 && weeks[0].end_date < today;
+    const selectedStale = stale && week?.id === weeks[0].id;
+    setText('week-status', selectedStale ? 'Awaiting new flyer' : {empty: 'No flyer yet', past: 'Past flyer', future: 'Upcoming flyer', current: 'Current week'}[kind]);
+    $('week-status').className = 'week-status ' + (selectedStale ? 'stale' : kind);
     $('week-status').title = 'Based on the printed sale dates in New York time. This is a saved flyer snapshot.';
+    $('update-notice').hidden = !stale;
+    setText('update-notice', stale ? `The latest saved flyer ended ${date(weeks[0].end_date)}. Reload to check for a newer report; until then, these offers are past specials. Confirm current deals on Market Basket’s official weekly flyer.` : '');
+  }
+  function renderExtractionSummary(week) {
+    if (!week) { setText('footer-extraction', 'No flyer observations saved yet.'); return; }
+    const offers = week.offers || [];
+    const pages = week.extraction?.page_count;
+    const total = week.source?.pdf?.page_count;
+    const pageText = Number.isInteger(pages) ? ` from ${pages}${Number.isInteger(total) ? ` of ${total}` : ''} flyer ${total === 1 || !total && pages === 1 ? 'page' : 'pages'}` : '';
+    const method = week.extraction?.method === 'pdf' ? 'PDF extraction' : 'Saved extraction';
+    setText('footer-extraction', `Selected flyer: ${method} · ${offers.length.toLocaleString()} offers${pageText} · ${offers.filter(flagged).length.toLocaleString()} flagged for review.`);
   }
   function renderWeek() {
     const week = state.week;
@@ -135,6 +155,7 @@
     setText('category-count', aisles.filter(a => offers.some(o => aisleFor(o).id === a.id)).length);
     setText('week-count', weeks.length);
     renderWeekStatus(week);
+    renderExtractionSummary(week);
     setText('review-count', offers.filter(flagged).length);
     const sourceIssues = week?.source?.issues || [];
     $('source-issues').hidden = !sourceIssues.length;
@@ -463,7 +484,11 @@
   $('season-region').addEventListener('change', renderSeasonality);
   $('close-dialog').addEventListener('click', () => $('offer-dialog').close());
   $('offer-dialog').addEventListener('click', event => { if (event.target === $('offer-dialog')) { const r = $('offer-dialog').getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) $('offer-dialog').close(); } });
-  setText('generated-at', data.generated_at ? `Report generated ${date(data.generated_at)}. All charts use the archive embedded in this file.` : 'All charts use the archive embedded in this file.');
+  const generated = timestamp(data.generated_at);
+  setText('generated-at', generated ? `Report updated ${generated}.` : 'Saved report; update time unavailable.');
+  // Refresh sale-date status when a report stays open overnight or in a background tab.
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) renderWeekStatus(state.week); });
+  setInterval(() => renderWeekStatus(state.week), 60_000);
   (data.notes || []).forEach(note => $('report-notes').append(element('li', note)));
   renderWeek(); renderHistoryCategories(); renderProductOptions(); renderCoverage(); restoreView();
 })();
