@@ -14,9 +14,17 @@ The report works in a browser; Python handles downloads and updates.
 
 Click a preview to enlarge.
 
-| In season | Price history | This week |
-| --- | --- | --- |
-| <a href="docs/screenshots/in-season.png"><img src="docs/screenshots/in-season.png" alt="In season tab showing the seasonal produce calendar" width="280"></a> | <a href="docs/screenshots/price-history.png"><img src="docs/screenshots/price-history.png" alt="Price history tab with category filters and product tracking" width="280"></a> | <a href="docs/screenshots/this-week.png"><img src="docs/screenshots/this-week.png" alt="This week tab showing colorful shopping categories and sale prices" width="280"></a> |
+### This Week
+
+<a href="docs/screenshots/this-week.png"><img src="docs/screenshots/this-week.png" alt="This Week tab showing colorful shopping categories and sale prices" width="800"></a>
+
+### Price History
+
+<a href="docs/screenshots/price-history.png"><img src="docs/screenshots/price-history.png" alt="Price History tab with category filters and product tracking" width="800"></a>
+
+### In Season
+
+<a href="docs/screenshots/in-season.png"><img src="docs/screenshots/in-season.png" alt="In Season tab showing the seasonal produce calendar" width="800"></a>
 
 ## Install
 
