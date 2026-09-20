@@ -8,6 +8,10 @@
     {
       "path": "weeks/2026-09-13_2026-09-19.json",
       "sha256": "beed1081dd093d294a01db5b2f5aace061436f6c99277fd79e9ad1ce00fdab56"
+    },
+    {
+      "path": "weeks/2026-09-20_2026-09-26.json",
+      "sha256": "c54a06619acb3a1ffa45872bd4ca2560790ab875dcade54c624e3c1fbd5ce146"
     }
   ]
 }
