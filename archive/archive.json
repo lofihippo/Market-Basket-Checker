@@ -12,6 +12,10 @@
     {
       "path": "weeks/2026-09-20_2026-09-26.json",
       "sha256": "8532696479c48fa81fdb9f6023e3f7db965af0bafd0ee3c369b163c86e64754a"
+    },
+    {
+      "path": "weeks/2026-09-27_2026-10-03.json",
+      "sha256": "a6f7ec350552f5446ce282c95db01edd19c595ea89795fd1e8da995e702f2cba"
     }
   ]
 }
