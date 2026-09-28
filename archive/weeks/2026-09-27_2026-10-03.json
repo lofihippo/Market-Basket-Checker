@@ -13,7 +13,7 @@
           "_source_text": "Top Round\nRoast\nSave $2.00\nlb.\n4\n99\nCut\nFresh\nDaily\nlb.",
           "amount": 4.99,
           "category": "Meat",
-          "category_source": "Official department: exact name match",
+          "category_source": "Official department: name-based category match",
           "confidence": "high",
           "details": "Cut Fresh Daily",
           "item": "Top Round Roast",
@@ -13905,14 +13905,14 @@
     "end_date": "2026-10-03",
     "title": "Weekly Flyer Sep 27 - Oct 3",
     "source_page": "https://www.shopmarketbasket.com/weekly-flyer/",
-    "fetched_at": "2026-09-27T23:29:24.579015+00:00",
-    "checked_at": "2026-09-27T23:29:24.579015+00:00",
-    "content_id": "b9c7b16de15393103d3bd0fece500468e0d5e4bfb79f97b70a8c2d56abad836c",
+    "fetched_at": "2026-09-28T20:07:56.644774+00:00",
+    "checked_at": "2026-09-28T20:07:56.644774+00:00",
+    "content_id": "cb0031c9acba8fa3b5f5aec34af92847e82f13c10b2220171c70da88c42049ac",
     "issues": [],
     "pdf": {
       "sha256": "f8696b16b82d10d696c1fe3e95b07a7351959db2d402f0bd9f35182acb86eb12",
-      "url": "https://www.shopmarketbasket.com/download/52850/?tmstv=1790551281",
-      "download_url": "https://www.shopmarketbasket.com/download/52850/?tmstv=1790551281",
+      "url": "https://www.shopmarketbasket.com/download/52850/?tmstv=1790623173",
+      "download_url": "https://www.shopmarketbasket.com/download/52850/?tmstv=1790623173",
       "page_count": 8,
       "text_page_count": 8,
       "dates_verified": true,
@@ -13920,11 +13920,11 @@
       "path": "objects/f8696b16b82d10d696c1fe3e95b07a7351959db2d402f0bd9f35182acb86eb12.pdf"
     },
     "api": {
-      "sha256": "fefc9380a297cb4e385d6889418dddfe24d6f76e00586540b62747bc4ab8f94e",
+      "sha256": "f4238ae2e0b96b117accbbfad2f930f919aa5839f21ae25544bdb48791508a1d",
       "url": "https://www.shopmarketbasket.com/wp-json/mb/v1/weekly-flyer",
       "product_count": 330,
-      "size_bytes": 178335,
-      "path": "objects/fefc9380a297cb4e385d6889418dddfe24d6f76e00586540b62747bc4ab8f94e.json"
+      "size_bytes": 178343,
+      "path": "objects/f4238ae2e0b96b117accbbfad2f930f919aa5839f21ae25544bdb48791508a1d.json"
     }
   },
   "extraction": {
