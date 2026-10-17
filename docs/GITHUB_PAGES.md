@@ -62,6 +62,9 @@ files on the data branch. Price history and category filters work entirely in
 the browser. The build saves history before deploying, so a failed Pages step
 can be recovered by running the workflow again. If the PDF layout changes and
 extraction fails, fix the extractor before retrying; the previous site survives.
+Recognized Halloween coloring-contest instructions and their matching drawing
+are recorded as non-offer pages. Other pages with no extracted offers still
+stop publication, so an unfamiliar product layout cannot silently disappear.
 
 The two dated fixtures can seed the initial archive from the existing local
 database. Later runs preserve those weeks and add real observations. A fresh

@@ -689,12 +689,53 @@ def extract_page(page):
     return dedup
 
 
+def _contest_instructions(text):
+    text = ' '.join(text.split()).casefold()
+    return all(marker in text for marker in (
+        'coloring contest', 'no purchase necessary',
+        'bring drawings to the customer service desk',
+        'color in the back of this page',
+    ))
+
+
+def _non_offer_reason(doc, pno):
+    """Recognize the verified Halloween insert, never arbitrary empty pages.
+
+    The reverse side has no selectable heading, so require both the contest
+    instructions on the preceding page and the known drawing's character
+    labels. Price/title evidence keeps mixed promotional/product pages under
+    the normal extraction guard.
+    """
+    page = doc[pno]
+    spans = collect_spans(page)
+    text = ' '.join(page.get_text().split()).casefold()
+    if product_name_spans(spans) or re.search(r'\bsave\b', text):
+        return None
+    if _contest_instructions(text):
+        return 'coloring_contest_instructions'
+    if (pno > 0 and _contest_instructions(doc[pno - 1].get_text())
+            and all(label in text for label in (
+                'count von chip', 'the count of cocoa',
+                'swiss the ghost', 'the broccoli werewolf'))
+            and not re.search(r'[$¢]|\d+\.\d{2}\b', text)
+            and not _price_runs(spans)):
+        return 'coloring_contest_drawing'
+    return None
+
+
 def extract_document(pdf, pages=None):
     """Shared complete-document result for local and acquired flyer inputs."""
     with pymupdf.open(pdf) as doc:
         selected = pages if pages is not None else range(doc.page_count)
-        return {'pages': [{'page': pno, 'deals': extract_page(doc[pno])}
-                          for pno in selected]}
+        result = []
+        for pno in selected:
+            page = {'page': pno, 'deals': extract_page(doc[pno])}
+            if not page['deals']:
+                reason = _non_offer_reason(doc, pno)
+                if reason:
+                    page['non_offer_reason'] = reason
+            result.append(page)
+        return {'pages': result}
 
 
 def main():

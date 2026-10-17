@@ -165,6 +165,22 @@ class WeeklyCommandTests(unittest.TestCase):
                 extract.assert_not_called()
                 self.assertIn('outside the source archive', self.stderr.getvalue())
 
+    def test_recognized_contest_insert_can_publish_but_unknown_reason_cannot(self):
+        self.document['pages'][1]['deals'] = []
+        for reason in ('coloring_contest_instructions', 'coloring_contest_drawing'):
+            with self.subTest(reason=reason):
+                self.document['pages'][1]['non_offer_reason'] = reason
+                code, _, _ = self.run_cli()
+                self.assertEqual(code, 0)
+                self.assertIn('Recognized coloring-contest insert', self.stdout.getvalue())
+                self.assertEqual(json.loads(self.output.read_text())['pages'][1]
+                                 ['non_offer_reason'], reason)
+        self.output.write_bytes(self.prior)
+        self.document['pages'][1]['non_offer_reason'] = 'unknown_layout'
+        code, _, _ = self.run_cli()
+        self.assertEqual(code, 1)
+        self.assertEqual(self.output.read_bytes(), self.prior)
+
 
 if __name__ == "__main__":
     unittest.main()

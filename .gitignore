@@ -13,6 +13,7 @@ env/
 *.pdf
 !tests/fixtures/2026-09-06/flyer.pdf
 !tests/fixtures/2026-09-13/flyer.pdf
+!tests/fixtures/2026-10-11/flyer.pdf
 
 # Generated output
 output/

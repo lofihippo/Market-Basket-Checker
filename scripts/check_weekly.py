@@ -84,10 +84,17 @@ def main(argv=None):
         count = sum(len(page["deals"]) for page in result["pages"])
         if count == 0:
             raise SourceError("PDF extraction produced no offers; the previous export was retained")
-        empty_pages = [page['page'] + 1 for page in result['pages'] if not page['deals']]
+        non_offer_pages = [page['page'] + 1 for page in result['pages']
+                           if not page['deals'] and page.get('non_offer_reason') in {
+                               'coloring_contest_instructions', 'coloring_contest_drawing'}]
+        empty_pages = [page['page'] + 1 for page in result['pages']
+                       if not page['deals'] and page['page'] + 1 not in non_offer_pages]
         if empty_pages:
             raise SourceError(f"No offers extracted from PDF page(s) {empty_pages}; "
                               "review the layout before publishing. Previous export retained")
+        if non_offer_pages:
+            print(f"Recognized coloring-contest insert on PDF page(s) {non_offer_pages}; "
+                  "no offers expected there.")
         result["source"] = {key: value for key, value in manifest.items() if key != "changed"}
         result["source"]["archive_root"] = str(args.source_dir.resolve())
         result["extraction"] = {"method": "pdf", "config": ed.CONFIG}

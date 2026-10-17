@@ -231,6 +231,26 @@ class DealHistoryTests(unittest.TestCase):
                 record_week(self.path, data)
         self.assertEqual(build_history(self.path), before)
 
+    def test_recognized_contest_pages_are_preserved_in_history(self):
+        data = payload()
+        data['source']['pdf']['page_count'] = 3
+        data['pages'].extend([
+            {'page': 1, 'deals': [], 'non_offer_reason': 'coloring_contest_instructions'},
+            {'page': 2, 'deals': [], 'non_offer_reason': 'coloring_contest_drawing'},
+        ])
+        record_week(self.path, data)
+        before = build_history(self.path)
+        self.assertEqual(before['weeks'][0]['extraction']['page_count'], 3)
+        unknown = copy.deepcopy(data)
+        unknown['pages'][1]['non_offer_reason'] = 'unknown_layout'
+        with self.assertRaisesRegex(ValueError, 'empty extracted page'):
+            record_week(self.path, unknown)
+        data['pages'][0]['deals'] = []
+        data['pages'][0]['non_offer_reason'] = 'coloring_contest_instructions'
+        with self.assertRaisesRegex(ValueError, 'at least one extracted offer'):
+            record_week(self.path, data)
+        self.assertEqual(build_history(self.path), before)
+
 
 if __name__ == "__main__":
     unittest.main()

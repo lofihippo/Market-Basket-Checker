@@ -101,11 +101,15 @@ def _validate(payload):
         if page["page"] in page_numbers:
             raise ValueError("History contains duplicate page numbers")
         page_numbers.add(page["page"])
-        if not isinstance(page.get("deals"), list) or not page["deals"]:
+        if (not isinstance(page.get("deals"), list)
+                or (not page['deals'] and page.get('non_offer_reason') not in {
+                    'coloring_contest_instructions', 'coloring_contest_drawing'})):
             raise ValueError("History refuses an empty extracted page")
         for deal in page["deals"]:
             if not isinstance(deal, dict) or not isinstance(deal.get("item"), str) or not deal["item"].strip():
                 raise ValueError("History requires an item name for every offer")
+    if not any(page['deals'] for page in pages):
+        raise ValueError("History requires at least one extracted offer")
     if "page_count" in source["pdf"]:
         count = source["pdf"]["page_count"]
         if type(count) is not int or count <= 0:
