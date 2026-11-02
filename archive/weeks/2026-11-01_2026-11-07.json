@@ -15388,14 +15388,14 @@
     "end_date": "2026-11-07",
     "title": "Weekly Flyer Nov 1 - Nov 7",
     "source_page": "https://www.shopmarketbasket.com/weekly-flyer/",
-    "fetched_at": "2026-11-02T01:06:57.086710+00:00",
-    "checked_at": "2026-11-02T01:06:57.086710+00:00",
-    "content_id": "3e999d99d1c7145f692a2be75b125d03eedb4221a26ff4eeefe3664f7eaf60b5",
+    "fetched_at": "2026-11-02T22:47:22.506315+00:00",
+    "checked_at": "2026-11-02T22:47:22.506315+00:00",
+    "content_id": "9beb8b1c066df515241828e55014581ec8ba5110c4ce0bb0283c61454d106b80",
     "issues": [],
     "pdf": {
       "sha256": "4dc13bedcc59177956eeec61ecc440441bba81e28c6a3379cc443731d71b34af",
-      "url": "https://www.shopmarketbasket.com/download/54622/?tmstv=1793580040",
-      "download_url": "https://www.shopmarketbasket.com/download/54622/?tmstv=1793580040",
+      "url": "https://www.shopmarketbasket.com/download/54622/?tmstv=1793657528",
+      "download_url": "https://www.shopmarketbasket.com/download/54622/?tmstv=1793657528",
       "page_count": 8,
       "text_page_count": 8,
       "dates_verified": true,
@@ -15403,11 +15403,11 @@
       "path": "objects/4dc13bedcc59177956eeec61ecc440441bba81e28c6a3379cc443731d71b34af.pdf"
     },
     "api": {
-      "sha256": "c5a06d30355acaec6ea590fad7ece851a2072e0f85375ab2226d79863301192f",
+      "sha256": "fe261fddf12ad69f112260b3d242026e5ca81816808f4974a8a8ecf9a59c53f9",
       "url": "https://www.shopmarketbasket.com/wp-json/mb/v1/weekly-flyer",
-      "product_count": 364,
-      "size_bytes": 195090,
-      "path": "objects/c5a06d30355acaec6ea590fad7ece851a2072e0f85375ab2226d79863301192f.json"
+      "product_count": 366,
+      "size_bytes": 196090,
+      "path": "objects/fe261fddf12ad69f112260b3d242026e5ca81816808f4974a8a8ecf9a59c53f9.json"
     }
   },
   "extraction": {
