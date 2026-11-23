@@ -7119,7 +7119,7 @@
           "_source_text": "Super Coffee\nCreamer\nSave $1.50\n3\n99\n32 oz.\nBTL.",
           "amount": 3.99,
           "category": "Dairy & Frozen Foods",
-          "category_source": "Official department: name-based category match",
+          "category_source": "Official department: exact name match",
           "confidence": "high",
           "details": "32 oz. BTL.",
           "item": "Super Coffee Creamer",
@@ -16510,14 +16510,14 @@
     "end_date": "2026-11-28",
     "title": "Weekly Flyer Nov 15 - Nov 28",
     "source_page": "https://www.shopmarketbasket.com/weekly-flyer/",
-    "fetched_at": "2026-11-16T23:24:05.845416+00:00",
-    "checked_at": "2026-11-16T23:24:05.845416+00:00",
-    "content_id": "7ee7f83e9f1bf7cab0995c99ab9e1def4477d9df9a6d9521da58ec558c95e765",
+    "fetched_at": "2026-11-23T02:04:15.121165+00:00",
+    "checked_at": "2026-11-23T02:04:15.121165+00:00",
+    "content_id": "75fdee6977e426836406c3923bd7d9f8ba1caf4485b06100764271289d4dada7",
     "issues": [],
     "pdf": {
       "sha256": "1ddad2d8f03904968557d292517bd882a024d8317e96f9432e7eb4f2cab89f6b",
-      "url": "https://www.shopmarketbasket.com/download/54705/?tmstv=1794869809",
-      "download_url": "https://www.shopmarketbasket.com/download/54705/?tmstv=1794869809",
+      "url": "https://www.shopmarketbasket.com/download/54705/?tmstv=1795395910",
+      "download_url": "https://www.shopmarketbasket.com/download/54705/?tmstv=1795395910",
       "page_count": 8,
       "text_page_count": 8,
       "dates_verified": true,
@@ -16525,11 +16525,11 @@
       "path": "objects/1ddad2d8f03904968557d292517bd882a024d8317e96f9432e7eb4f2cab89f6b.pdf"
     },
     "api": {
-      "sha256": "c49abf563725e034d405472595efbf1ba89913ab8e54c36cbb2db0557a940a64",
+      "sha256": "2f9b9a105700458e9c24a60e80c81f2ee7eb30a2d58bbe4733606217ab42e31f",
       "url": "https://www.shopmarketbasket.com/wp-json/mb/v1/weekly-flyer",
-      "product_count": 412,
-      "size_bytes": 219537,
-      "path": "objects/c49abf563725e034d405472595efbf1ba89913ab8e54c36cbb2db0557a940a64.json"
+      "product_count": 414,
+      "size_bytes": 220590,
+      "path": "objects/2f9b9a105700458e9c24a60e80c81f2ee7eb30a2d58bbe4733606217ab42e31f.json"
     }
   },
   "extraction": {
