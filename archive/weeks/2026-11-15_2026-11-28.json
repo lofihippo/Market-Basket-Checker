@@ -16277,7 +16277,7 @@
           "_source_text": "Purest of\nIngredients\nSave 40¢\n3\n99\nCiabatta Bread\n3 Varieties\n16 oz.",
           "amount": null,
           "category": "Bakery",
-          "category_source": "Estimated from item words",
+          "category_source": "Official department: exact name match",
           "confidence": "low",
           "details": "Purest of Ingredients 3 Varieties 16 oz.",
           "item": "Ciabatta Bread",
@@ -16510,14 +16510,14 @@
     "end_date": "2026-11-28",
     "title": "Weekly Flyer Nov 15 - Nov 28",
     "source_page": "https://www.shopmarketbasket.com/weekly-flyer/",
-    "fetched_at": "2026-11-23T02:04:15.121165+00:00",
-    "checked_at": "2026-11-23T02:04:15.121165+00:00",
-    "content_id": "75fdee6977e426836406c3923bd7d9f8ba1caf4485b06100764271289d4dada7",
+    "fetched_at": "2026-11-24T01:40:44.259350+00:00",
+    "checked_at": "2026-11-24T01:40:44.259350+00:00",
+    "content_id": "2888998d0aa39eda64ebe87eb7baae74828a1340448b84070136d1bd5bac6bea",
     "issues": [],
     "pdf": {
       "sha256": "1ddad2d8f03904968557d292517bd882a024d8317e96f9432e7eb4f2cab89f6b",
-      "url": "https://www.shopmarketbasket.com/download/54705/?tmstv=1795395910",
-      "download_url": "https://www.shopmarketbasket.com/download/54705/?tmstv=1795395910",
+      "url": "https://www.shopmarketbasket.com/download/54705/?tmstv=1795484048",
+      "download_url": "https://www.shopmarketbasket.com/download/54705/?tmstv=1795484048",
       "page_count": 8,
       "text_page_count": 8,
       "dates_verified": true,
@@ -16525,11 +16525,11 @@
       "path": "objects/1ddad2d8f03904968557d292517bd882a024d8317e96f9432e7eb4f2cab89f6b.pdf"
     },
     "api": {
-      "sha256": "2f9b9a105700458e9c24a60e80c81f2ee7eb30a2d58bbe4733606217ab42e31f",
+      "sha256": "1986b67794188b9a097b78d2492af1191043d71942b41208fcd59dbcdeb58ef1",
       "url": "https://www.shopmarketbasket.com/wp-json/mb/v1/weekly-flyer",
-      "product_count": 414,
-      "size_bytes": 220590,
-      "path": "objects/2f9b9a105700458e9c24a60e80c81f2ee7eb30a2d58bbe4733606217ab42e31f.json"
+      "product_count": 411,
+      "size_bytes": 218927,
+      "path": "objects/1986b67794188b9a097b78d2492af1191043d71942b41208fcd59dbcdeb58ef1.json"
     }
   },
   "extraction": {
